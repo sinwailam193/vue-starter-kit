@@ -1,51 +1,41 @@
 <template lang="html">
     <div class="users">
         <h1>Hello Users</h1>
-        <form @submit="onSubmit">
-            <input type="text" v-model="newUser.name" placeholder="Enter Name">
-            <input type="text" v-model="newUser.email" placeholder="Enter Email">
-            <input type="submit" value="Add">
-        </form>
+        <submitForm @formSubmit="onSubmit"></submitForm>
         <hr />
-        <ul>
-            <li v-for="(user, index) in users">
-                <input type="checkbox" class="toggle" v-model="user.contacted">
-                <span :class="{contacted: user.contacted}">{{ user.name }} {{ user.email }}</span>
-                <button type="button" name="button" @click="onClick(index)">Delete</button>
-            </li>
-        </ul>
+        <list
+            :users="users"
+            @deleteClick="onClick"
+        ></list>
     </div>
 </template>
 
 <script>
+    import Vue from "vue";
+    import Component from "vue-class-component";
     import axios from "axios";
+    import submitForm from "./submitForm";
+    import list from "./list";
 
-    export default {
-        name: "Users",
-        data() {
-            return {
-                users: [],
-                newUser: {
-                    name: "",
-                    email: ""
-                }
-            }
-        },
+    @Component({
+        components: { submitForm, list }
+    })
+    export default class Users extends Vue {
+        users = [];
+
         async created() {
             this.users = await axios.get("https://jsonplaceholder.typicode.com/users")
                 .then(res => res.data.map(val => ({ ...val, contacted: false })));
-        },
-        methods: {
-            onSubmit(event) {
-                const { newUser: { email, name }, users } = this;
-                event.preventDefault();
-                users.push({ email, name, contacted: false });
-                this.newUser = { name: "", email: "" };
-            },
-            onClick(index) {
-                const { users } = this;
-                users.splice(index, 1);
-            }
         }
+
+        onSubmit(email, name) {
+            const { users } = this;
+            users.push({ email, name, contacted: false });
+        };
+
+        onClick(index) {
+            const { users } = this;
+            users.splice(index, 1);
+        };
     }
 </script>
