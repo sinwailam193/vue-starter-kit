@@ -1,15 +1,21 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import Hello from '@/components/hello'
+import Vue from 'vue';
+import Router from 'vue-router';
+import MainPage from '@/components/mainPage';
+import Translate from '@/components/translate';
 
 Vue.use(Router)
 
 export default new Router({
-  routes: [
-    {
-      path: '/',
-      name: 'Hello',
-      component: Hello
-    }
-  ]
+    routes: [
+        {
+          path: '/translate',
+          name: 'Translate',
+          component: Translate
+        },
+        {
+          path: '/',
+          name: 'MainPage',
+          component: MainPage
+        },
+    ]
 })
